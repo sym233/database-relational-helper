@@ -1,9 +1,16 @@
 import { parseAttributes, parseFd, simplifyFds, stringifyAttrs, stringifyFds, findAttributeClosure, findCandidateKeys, findMinimalCover, decompositeTo3nf, checkNf } from './relationalChecker';
 
+// input
+const attrstr = 'A, B, C, D, E, G';
+const fdstr = `A->B
+B->C
+B->D
+B->E`;
 
-const [allAttributes, attrNames] = parseAttributes('A, B, C, D, E, G');
+
+const [allAttributes, attrNames] = parseAttributes(attrstr);
 // console.log(attrNames);
-const fds = parseFd('A->B\nB->C\nB->D\nB->E', attrNames, '\n');
+const fds = parseFd(fdstr, attrNames);
 // console.log(fds);
 console.log(stringifyFds(fds, attrNames));
 for (let i = 0; i <= allAttributes; i++) {
