@@ -1,4 +1,4 @@
-import { parseAttributes, parseFd, simplifyFds, stringifyAttrs, stringifyFds, check2nf, check3nf, checkBcnf, findAttributeClosure, findCandidateKeys, findMinimalCover, decompositeTo3nf, checkNf } from './checker';
+import { parseAttributes, parseFd, simplifyFds, stringifyAttrs, stringifyFds, findAttributeClosure, findCandidateKeys, findMinimalCover, decompositeTo3nf, checkNf } from './relationalChecker';
 
 
 const [allAttributes, attrNames] = parseAttributes('A, B, C, D, E, G');
@@ -24,7 +24,6 @@ for (const isNf of checkNf(allAttributes, fds, attrNames)) {
     console.log(isNf.msg!);
   }
 }
-
 
 const dec = decompositeTo3nf(allAttributes, fds);
 console.log('decompositioin to 3NF:', ...dec.map(a => stringifyAttrs(a, attrNames)));

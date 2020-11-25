@@ -7,8 +7,8 @@ const MAX_ATTRS = 30;
  * extract attribute names from string, return the whole bitwise attributes and their names
  * @param attrstr "attr 1, attr 2,..."
  */
-function parseAttributes(attrstr: string): [Attributes, AttrNames] {
-  const splitted = attrstr.split(',').map(s => s.trim());
+function parseAttributes(attrstr: string, splitter: string = ','): [Attributes, AttrNames] {
+  const splitted = attrstr.split(splitter).map(s => s.trim());
   const set = new Set<string>();
   for (const attr of splitted) {
     if (set.has(attr)) {
@@ -26,17 +26,18 @@ function parseAttributes(attrstr: string): [Attributes, AttrNames] {
  * parse functional dependencies from string
  * @param fds "A, B -> C, D\n", a FD per line
  * @param attrNames attribute names
- * @param splitter split each FD, default '\n'
+ * @param fdSplitter split each FD, default '\n'
+ * @param attrSplitter split each attr, default ','
  */
-function parseFd(fds: string, attrNames: AttrNames, splitter: string = '\n'): FD[] {
-  const lines = fds.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+function parseFd(fds: string, attrNames: AttrNames, fdSplitter: string = '\n', attrSplitter: string = ','): FD[] {
+  const lines = fds.split(fdSplitter).map(line => line.trim()).filter(line => line.length > 0);
   const attrIndexes = new Map<string, number>();
   for (const [index, attrName] of attrNames.entries()) {
     attrIndexes.set(attrName, index);
   }
   const getIndex = (attrstr: string, line: string) => 
     attrstr
-      .split(',')
+      .split(attrSplitter)
       .map(attr => attr.trim())
       .map(attr => {
         if (attrIndexes.has(attr)) {
