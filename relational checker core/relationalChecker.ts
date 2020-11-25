@@ -6,9 +6,10 @@ const MAX_ATTRS = 30;
 /**
  * extract attribute names from string, return the whole bitwise attributes and their names
  * @param attrstr "attr 1, attr 2,..."
+ * @param seperator default ','
  */
-function parseAttributes(attrstr: string, splitter: string = ','): [Attributes, AttrNames] {
-  const splitted = attrstr.split(splitter).map(s => s.trim());
+function parseAttributes(attrstr: string, seperator: string = ','): [Attributes, AttrNames] {
+  const splitted = attrstr.split(seperator).map(s => s.trim());
   const set = new Set<string>();
   for (const attr of splitted) {
     if (set.has(attr)) {
@@ -26,18 +27,18 @@ function parseAttributes(attrstr: string, splitter: string = ','): [Attributes, 
  * parse functional dependencies from string
  * @param fds "A, B -> C, D\n", a FD per line
  * @param attrNames attribute names
- * @param fdSplitter split each FD, default '\n'
- * @param attrSplitter split each attr, default ','
+ * @param fdSeperator seperate each FD, default '\n'
+ * @param attrSeperator seperate each attr, default ','
  */
-function parseFd(fds: string, attrNames: AttrNames, fdSplitter: string = '\n', attrSplitter: string = ','): FD[] {
-  const lines = fds.split(fdSplitter).map(line => line.trim()).filter(line => line.length > 0);
+function parseFd(fds: string, attrNames: AttrNames, fdSeperator: string = '\n', attrSeperator: string = ','): FD[] {
+  const lines = fds.split(fdSeperator).map(line => line.trim()).filter(line => line.length > 0);
   const attrIndexes = new Map<string, number>();
   for (const [index, attrName] of attrNames.entries()) {
     attrIndexes.set(attrName, index);
   }
-  const getIndex = (attrstr: string, line: string) => 
+  const getIndex = (attrstr: string, line: string) =>
     attrstr
-      .split(attrSplitter)
+      .split(attrSeperator)
       .map(attr => attr.trim())
       .map(attr => {
         if (attrIndexes.has(attr)) {
@@ -54,7 +55,7 @@ function parseFd(fds: string, attrNames: AttrNames, fdSplitter: string = '\n', a
     return {
       lhs: getIndex(left, line),
       rhs: getIndex(right, line),
-    }
+    };
   });
 }
 
@@ -94,9 +95,9 @@ function simplifyFds(fds: FD[]): FD[] {
   for (const fd of fds) {
     for (const a of singleAttrs(fd.rhs)) {
       sfds.push({
-          lhs: fd.lhs,
-          rhs: a,
-        });
+        lhs: fd.lhs,
+        rhs: a,
+      });
     }
   }
   return sfds;
@@ -143,7 +144,7 @@ function findAttributeClosure(attrs: Attributes, fds: FD[]): Attributes {
     }
     const currentAttrs: Attributes = attrs & mask;
     let currentClosure: Attributes = currentAttrs | (closures.get(currentAttrs & (mask >> 1)) ?? 0);
-    for (;;) {
+    for (; ;) {
       let attrAdded = false;
       for (const fd of fds) {
         if (isSubsetOf(fd.lhs, currentClosure) && !isSubsetOf(fd.rhs, currentClosure)) {
@@ -317,9 +318,6 @@ function checkBcnf(attrs: Attributes, fds: FD[], attrNames: AttrNames): CheckNfR
 
 /**
  * check 2NF, 3NF and BCNF
- * @param attrs 
- * @param fds 
- * @param attrNames 
  */
 function checkNf(attrs: Attributes, fds: FD[], attrNames: AttrNames): CheckNfResult[] {
   return [
@@ -353,4 +351,16 @@ function decompositeTo3nf(attrs: Attributes, fds: FD[]): Attributes[] {
   return decomposition;
 }
 
-export { parseAttributes, parseFd, simplifyFds, stringifyAttrs, stringifyFds, findAttributeClosure, findCandidateKeys, findMinimalCover, check2nf, check3nf, checkBcnf, checkNf, decompositeTo3nf };
+export {
+  parseAttributes,
+  parseFd,
+  // simplifyFds,
+  stringifyAttrs,
+  stringifyFds,
+  findAttributeClosure,
+  findCandidateKeys,
+  findMinimalCover,
+  check2nf, check3nf, checkBcnf,
+  checkNf,
+  decompositeTo3nf,
+};

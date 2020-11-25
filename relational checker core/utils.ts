@@ -13,7 +13,7 @@ class Queue<T> {
   public get length(): number {
     return this.rear - this.front;
   }
-  public enqueue(item: T) {
+  public enqueue(item: T): void {
     this.data.push(item);
     this.rear++;
   }
@@ -24,8 +24,9 @@ class Queue<T> {
       this.maintain();
       return item;
     }
+    return undefined;
   }
-  private maintain() {
+  private maintain(): void {
     if (this.length < this.front) {
       // this.data = this.data.slice(this.front, this.rear);
       this.data.splice(0, this.front);

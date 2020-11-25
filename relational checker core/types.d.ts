@@ -23,4 +23,4 @@ export interface CheckNfResult {
   type: '2NF' | '3NF' | 'BCNF';
   result: boolean;
   msg?: string;
-};
+}
