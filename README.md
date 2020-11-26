@@ -3,6 +3,7 @@ Input attributes and functional dependencies, calculate closures, candidate keys
 
 ## WebApp
 Visit https://sym233.github.io/database-relational-helper/ to visualize relations
+
 CSS is under construction
 
 ## Notice
