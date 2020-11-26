@@ -6,10 +6,12 @@ import {
   findAttributeClosure,
   findCandidateKeys,
   findMinimalCover,
+  isSubsetOf,
   parseAttributes,
   parseFd,
   stringifyAttrs,
-  stringifyFds
+  stringifyFds,
+  singleAttrs,
 } from 'relational checker core/relationalChecker';
 
 @Injectable({
@@ -40,6 +42,19 @@ export class RelationalCheckerService {
     } catch (e) {
       this.errorMsg = (e as Error).message;
       return false;
+    }
+  }
+  singleAttrs(attrs: Attributes = this.allAttrs): { name: string; attr: Attributes }[] {
+    return singleAttrs(attrs).map(sa => ({
+      name: stringifyAttrs(sa, this.attrNames),
+      attr: sa,
+    }));
+  }
+  selectAttr(attr: Attributes, selectedAttrs: Attributes): Attributes {
+    if (isSubsetOf(attr, selectedAttrs)) {
+      return selectedAttrs - attr;
+    } else {
+      return selectedAttrs + attr;
     }
   }
   stringifyAttrs(attrs: Attributes = this.allAttrs): string {

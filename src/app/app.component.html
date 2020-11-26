@@ -1,10 +1,73 @@
 <h1>Database Relational Helper</h1>
 <div class="input">
-<label id="attrs-label" for="attrs">Input Attributes (seperated by comma):</label>
-<input id="attrs" (input)="attrstr=$event.target.value" placeholder="Attr1, Attr2, Attr3"/>
-<label id="fds-label" for="fds">Input Functional Dependencies (1 FD per line):</label>
-<textarea id="fds" [rows]="textAreaHeight()" (input)="fdsstr=$event.target.value" placeholder="Attr1, Attr2 -> Attr3&#10;Attr2 -> Attr1, Attr3"></textarea>
+  <label id="attrs-label" for="attrs"
+    >Input Attributes (seperated by comma):</label
+  >
+  <input
+    id="attrs"
+    (input)="attrstr = $any($event.target).value"
+    placeholder="Attr1, Attr2, Attr3"
+  />
+  <label id="fds-label" for="fds"
+    >Input Functional Dependencies (1 FD per line):</label
+  >
+  <textarea
+    id="fds"
+    [rows]="textAreaHeight()"
+    (input)="fdsstr = $any($event.target).value"
+    placeholder="Attr1, Attr2 -> Attr3&#10;Attr2 -> Attr1, Attr3"
+  ></textarea>
 </div>
 <button (click)="parse()">Parse</button>
-<div>{{parsedRes}}</div>
+<div *ngIf="errorMsg">{{ errorMsg }}</div>
+<div *ngIf="parseDone">
+  <button
+    *ngFor="let buttonName of buttonNames; let i = index"
+    (click)="displayArea = i"
+  >
+    {{ buttonName }}
+  </button>
+  <div *ngIf="displayArea === 0">
+    <h4>Find Closure</h4>
+    <div>
+      <h5>Select Attributes For Closure</h5>
+      <div>
+        <label *ngFor="let sa of singleAttrs"
+          >{{ sa.name }}
+          <input
+            type="checkbox"
+            (input)="selectAttr(sa.attr)"
+            [checked]="isSelected(sa.attr)"
+          />
+        </label>
+      </div>
+      <p *ngIf="selectedAttrs">
+        {{ findClosure() }}
+      </p>
+    </div>
+    <p></p>
+  </div>
+  <div *ngIf="displayArea === 1">
+    <h4>Find Candidate Keys</h4>
+    <p *ngFor="let ck of findCandidateKeys()">{{ ck }}</p>
+  </div>
+  <div *ngIf="displayArea === 2">
+    <h4>Find Minimal Cover</h4>
+    <h5>A possible minimal cover:</h5>
+    <p *ngFor="let fd of findMinimalCover()">{{ fd }}</p>
+  </div>
+  <div *ngIf="displayArea === 3">
+    <h4>Check Normal Forms</h4>
+    <p *ngFor="let checkRes of checkNormalForms()">
+      <span *ngIf="!checkRes.result">NOT</span> In
+      <span>{{ checkRes.type }}</span>
+      <br />
+      <span *ngIf="!checkRes.result">{{ checkRes.msg }}</span>
+    </p>
+  </div>
+  <div *ngIf="displayArea === 4">
+    <h4>Decomposite to 3NF</h4>
+    <p *ngFor="let a of decompositeTo3Nf()">{{ a }}</p>
+  </div>
+</div>
 <router-outlet></router-outlet>

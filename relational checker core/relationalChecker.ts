@@ -354,7 +354,9 @@ function decompositeTo3nf(attrs: Attributes, fds: FD[]): Attributes[] {
 export {
   parseAttributes,
   parseFd,
+  isSubsetOf,
   // simplifyFds,
+  singleAttrs,
   stringifyAttrs,
   stringifyFds,
   findAttributeClosure,
